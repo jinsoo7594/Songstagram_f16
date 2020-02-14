@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "818676298810",
+    "firebase_url": "https://songstagramf16.firebaseio.com",
+    "project_id": "songstagramf16",
+    "storage_bucket": "songstagramf16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818676298810:android:74e0f29e8900c71fdef103",
+        "android_client_info": {
+          "package_name": "com.example.songstagram_f16"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818676298810-h6on3mfo3n7ure6b94csag0ra01jcu7h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.songstagram_f16",
+            "certificate_hash": "1c7f529ffb74283a52d10d9e6154823525762bde"
+          }
+        },
+        {
+          "client_id": "818676298810-agpmacja1ham1lbq2plhk267spbkbt3e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwtV4M9FrMyaINOwoPJNDwkLKwE3hXu5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818676298810-agpmacja1ham1lbq2plhk267spbkbt3e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
