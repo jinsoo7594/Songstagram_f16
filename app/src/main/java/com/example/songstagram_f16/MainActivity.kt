@@ -15,7 +15,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         when(p0.itemId){
             R.id.action_home ->{
+                // Fragment 객체 생성
                 var detailViewFragment = DetailViewFragment()
+                // FragmentManager-fragmentTransaction 의 replace 기능을 통해 앞에서 생성한 Fragment 객체로 FrameLayout 뷰를 변경해준다.
                 supportFragmentManager.beginTransaction().replace(R.id.main_content,detailViewFragment).commit()
                 return true
             }
@@ -50,14 +52,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottom_navigation.setOnNavigationItemSelectedListener(this)
+
         //사진을 가져올 수 있는 권한 요청
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 
         //메인 화면이 뜨면 DetailViewFragment가 메인화면에 보일수 있도 세팅
         //set default screen
         bottom_navigation.selectedItemId = R.id.action_home
-
-
-
     }
 }

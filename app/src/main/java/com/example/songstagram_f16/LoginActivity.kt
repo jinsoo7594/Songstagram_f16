@@ -186,6 +186,8 @@ class LoginActivity : AppCompatActivity() {
    fun moveMainPage(user: FirebaseUser?){
         if(user != null){
             // 있을 경우 매인액티비티를 호출
+            // var intent = Intent(this, MainActivity::class.java)
+            // startActivity(intent)
             startActivity(Intent(this,MainActivity::class.java))
         }
     }

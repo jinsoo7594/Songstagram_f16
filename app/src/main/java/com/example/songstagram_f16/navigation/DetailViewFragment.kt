@@ -16,8 +16,14 @@ import kotlinx.android.synthetic.main.item_detail.view.*
 
 class DetailViewFragment : Fragment(){
     var firestore : FirebaseFirestore? = null
+    //onCreateView : fragment가 자신의 UI를 호출한다. UI를 그리기 위해 메서드에서 View를 return 해야하는데 그렇지 않으면 null을 반환한다.
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = LayoutInflater.from(activity).inflate(R.layout.fragment_detail, container,false)
+        //기존 코드는 아래와 같이 나와있지만
+        //var view = LayoutInflater.from(activity).inflate(R.layout.fragment_detail, container,false)
+        //인자로 inflater가 전달되기 때문에 아래와 같이 수정이 가능하다.
+        //fragment_detail의 RecyclerView형태의 레이아웃을 메모리에 객체화(inflation)하여 뷰그릅 타입의 객체로 만든 다음 메인 레이아웃에 추가한다.
+        var view = inflater.inflate(R.layout.fragment_detail, container,false)
+
         firestore = FirebaseFirestore.getInstance()
 
         view.detailviewfragment_recyclerview.adapter = DetailViewRecyclerViewAdapter()
