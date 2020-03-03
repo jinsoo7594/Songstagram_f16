@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.songstagram_f16.R
 import com.example.songstagram_f16.navigation.model.ContentDTO
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_detail.view.*
 import kotlinx.android.synthetic.main.item_detail.view.*
 
 class DetailViewFragment : Fragment(){
     var firestore : FirebaseFirestore? = null
+    var uid : String? = null
     //onCreateView : fragment가 자신의 UI를 호출한다. UI를 그리기 위해 메서드에서 View를 return 해야하는데 그렇지 않으면 null을 반환한다.
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //기존 코드는 아래와 같이 나와있지만
@@ -26,9 +28,8 @@ class DetailViewFragment : Fragment(){
         //XML 레이아웃을 inflate하여 Fragment를 위한 View를 생성하고 Fragment 레이아웃의 root에 해당되는 View를 Activity에게 리턴해야 한다.
         //inflate란 XML 레이아웃에 정의된 뷰나 레이아웃을 읽어서 메모리상의 view 객체를 생성해주는 것
         var view = inflater.inflate(R.layout.fragment_detail, container,false)
-
         firestore = FirebaseFirestore.getInstance()
-
+        uid = FirebaseAuth.getInstance().currentUser?.uid
 
         //보여줄 데이터를 recyclerview가 아닌 adapter에 추가하고, recyclerview는 adapter를 통해 데이터를 얻고 View를 생성한다.
         // data  --> adapter --> recyclerview --> view
@@ -79,6 +80,7 @@ class DetailViewFragment : Fragment(){
             var explain_textview = view.detailviewitem_explain_textview
             var favoritecounter_textview = view.detailviewitem_favoritecounter_textview
             var profile_image = view.detailviewitem_profile_image
+            var favorite_imageview = view.detailviewitem_favorite_imageview
         }
 
 
@@ -116,8 +118,42 @@ class DetailViewFragment : Fragment(){
 
             //ProfileImage
             //Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).into(viewholder.detailviewitem_profile_image)
-            Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).into(holder.profile_image)
+            //Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).into(holder.profile_image)
 
+            // 좋아요 버튼이 눌렸을때
+            holder.favorite_imageview.setOnClickListener{
+                favoriteEvent(position)
+            }
+            //
+            if(contentDTOs!![position].favorites.containsKey(uid)){
+                // 꽉 찬 하트
+                holder.favorite_imageview.setImageResource(R.drawable.ic_favorite)
+            }else{
+                // 비어있는 하트
+                holder.favorite_imageview.setImageResource(R.drawable.ic_favorite_border)
+            }
+        }
+        fun favoriteEvent(position : Int){
+            // 선택한 컨텐츠의 Uid를 받아와서 좋아요 이벤트를 넣어줄 것이다.
+            //데이터베이스 경로
+            var tsDoc = firestore?.collection("images")?.document(contentUidList[position])
+            // runTransaction : 여러 클라이언트의 데이터 중복 접근 방지
+            firestore?.runTransaction{ transaction ->
+                var uid = FirebaseAuth.getInstance().currentUser?.uid
+                // transaction.get(DB path).toObject(Data Model)
+                // transaction.set(DB path, result)
+                var contentDTO = transaction.get(tsDoc!!).toObject(ContentDTO::class.java)
+
+                // 좋아요 버튼이 눌려있다면
+                if(contentDTO!!.favorites.containsKey(uid)){
+                    contentDTO.favoriteCount = contentDTO.favoriteCount-1
+                    contentDTO?.favorites.remove(uid)
+                }else{
+                    contentDTO.favoriteCount = contentDTO.favoriteCount+1
+                    contentDTO.favorites[uid!!] = true
+                }
+                transaction.set(tsDoc, contentDTO)
+            }
         }
 
     }

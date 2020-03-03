@@ -182,12 +182,20 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    override fun onStart() {
+        //LoginActivity가 시작되면 자동적으로 auth?.currentUser가 로그인 정보가 있는지 체크하는 코드다.
+        super.onStart()
+        //자동 로그인 설정
+        moveMainPage(auth?.currentUser)
+    }
     //firebaseuser 상태를 넘겨주고
    fun moveMainPage(user: FirebaseUser?){
+
         if(user != null){
             // 있을 경우 매인액티비티를 호출
             // var intent = Intent(this, MainActivity::class.java)
             // startActivity(intent)
+            Toast.makeText(this, getString(R.string.signin_complete),Toast.LENGTH_SHORT).show()
             startActivity(Intent(this,MainActivity::class.java))
         }
     }
