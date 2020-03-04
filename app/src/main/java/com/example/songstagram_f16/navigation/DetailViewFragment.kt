@@ -55,7 +55,10 @@ class DetailViewFragment : Fragment(){
                 notifyDataSetChanged() // 값이 새로고침 되도록
             }
        }
-
+        //recyclerview 개수를 넘겨준다.
+        override fun getItemCount(): Int {
+            return contentDTOs.size
+        }
         //recyclerview 를 사용할때 메모리를 적게 사용하기 위해 작성한다.
         // ViewHolder가 새로 만들어지는 시점에 자동호출된다.
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -83,12 +86,6 @@ class DetailViewFragment : Fragment(){
             var favorite_imageview = view.detailviewitem_favorite_imageview
         }
 
-
-
-        //recyclerview 개수를 넘겨준다.
-        override fun getItemCount(): Int {
-            return contentDTOs.size
-        }
         // Server에서 넘어온 데이터들을 매핑시켜준다.
         //
         // ViewHolder 객체가 재사용될 때 자동호출된다.
@@ -140,7 +137,8 @@ class DetailViewFragment : Fragment(){
             // runTransaction : 여러 클라이언트의 데이터 중복 접근 방지
             firestore?.runTransaction{ transaction ->
                 var uid = FirebaseAuth.getInstance().currentUser?.uid
-                // transaction.get(DB path).toObject(Data Model)
+                // var result = transaction.get(DB path).toObject(Data Model)
+                // 수정할 내용 ex) result.name = "SONG"
                 // transaction.set(DB path, result)
                 var contentDTO = transaction.get(tsDoc!!).toObject(ContentDTO::class.java)
 
