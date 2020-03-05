@@ -43,10 +43,14 @@ class DetailViewFragment : Fragment(){
         var contentUidList : ArrayList<String> = arrayListOf()
 
         init{
-            //DB에 접근을 해서 데이터를 가져올 수 있는 쿼리  (시간순으로)
+            //DB에 접근을 해서 데이터를 가져올 수 있는 쿼리  (시간순으로), 실시간 반영(addSnapshotListener)
             firestore?.collection("images")?.orderBy("timestamp")?.addSnapshotListener{ querySnapshot, firebaseFirestoreException ->
                 contentDTOs.clear() // 초기화
                 contentUidList.clear()
+                //UserFragment에서 signout을 하면 가끔 null을 리턴해서 NullpointException 이 발생한다.
+                //이 문제를 해결하기위해 @addSnapshotListener를 반환해준다.
+                if(querySnapshot == null) return@addSnapshotListener
+
                 for(snapshot in querySnapshot!!.documents){
                     var item = snapshot.toObject(ContentDTO::class.java) // 받아온 데이터를 ContentDTO 클래스로 캐스팅
                     contentDTOs.add(item!!)
@@ -117,6 +121,20 @@ class DetailViewFragment : Fragment(){
             //Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).into(viewholder.detailviewitem_profile_image)
             //Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).into(holder.profile_image)
 
+            //프로 이미지를 누르면 상대방 페이지로 넘어가는 기능
+            holder.profile_image.setOnClickListener{
+                var fragment = UserFragment()
+                var bundle = Bundle()
+                bundle.putString("destinationUid",contentDTOs[position].uid)
+                bundle.putString("userId",contentDTOs[position].userId)
+                fragment.arguments = bundle
+                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.main_content,fragment)?.commit()
+            }
+
+
+
+
+
             // 좋아요 버튼이 눌렸을때
             holder.favorite_imageview.setOnClickListener{
                 favoriteEvent(position)
@@ -153,6 +171,12 @@ class DetailViewFragment : Fragment(){
                 transaction.set(tsDoc, contentDTO)
             }
         }
+
+
+
+
+
+
 
     }
 

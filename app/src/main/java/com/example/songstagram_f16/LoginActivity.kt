@@ -197,6 +197,8 @@ class LoginActivity : AppCompatActivity() {
             // startActivity(intent)
             Toast.makeText(this, getString(R.string.signin_complete),Toast.LENGTH_SHORT).show()
             startActivity(Intent(this,MainActivity::class.java))
+            //MainActivity가 켜지면서 LoginActivity는 꺼지도록
+            finish()
         }
     }
 
