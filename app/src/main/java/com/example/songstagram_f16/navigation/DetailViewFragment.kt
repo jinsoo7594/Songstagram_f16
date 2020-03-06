@@ -1,5 +1,6 @@
 package com.example.songstagram_f16.navigation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,7 @@ class DetailViewFragment : Fragment(){
 
         //보여줄 데이터를 recyclerview가 아닌 adapter에 추가하고, recyclerview는 adapter를 통해 데이터를 얻고 View를 생성한다.
         // data  --> adapter --> recyclerview --> view
+        //import kotlinx.android.synthetic.main.fragment_detail.view.*
         view.detailviewfragment_recyclerview.adapter = DetailViewRecyclerViewAdapter()
         //layoutManager :  View를 어떤 배열로 보여줄지 결정한다.(항목의 배치)
         view.detailviewfragment_recyclerview.layoutManager = LinearLayoutManager(activity)
@@ -88,6 +90,7 @@ class DetailViewFragment : Fragment(){
             var favoritecounter_textview = view.detailviewitem_favoritecounter_textview
             var profile_image = view.detailviewitem_profile_image
             var favorite_imageview = view.detailviewitem_favorite_imageview
+            var comment_imageview = view.detailviewitem_comment_imageview
         }
 
         // Server에서 넘어온 데이터들을 매핑시켜준다.
@@ -130,11 +133,6 @@ class DetailViewFragment : Fragment(){
                 fragment.arguments = bundle
                 activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.main_content,fragment)?.commit()
             }
-
-
-
-
-
             // 좋아요 버튼이 눌렸을때
             holder.favorite_imageview.setOnClickListener{
                 favoriteEvent(position)
@@ -146,6 +144,12 @@ class DetailViewFragment : Fragment(){
             }else{
                 // 비어있는 하트
                 holder.favorite_imageview.setImageResource(R.drawable.ic_favorite_border)
+            }
+            // 댓글창 아이콘 클릭 시 CommentAcivity 실행
+            holder.comment_imageview.setOnClickListener { v ->
+                var intent = Intent(v.context, CommentActivity::class.java)
+                intent.putExtra("contentUid", contentUidList[position])
+                startActivity(intent)
             }
         }
         fun favoriteEvent(position : Int){
