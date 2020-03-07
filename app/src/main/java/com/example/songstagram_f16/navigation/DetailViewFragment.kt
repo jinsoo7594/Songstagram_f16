@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.songstagram_f16.R
+import com.example.songstagram_f16.navigation.model.AlarmDTO
 import com.example.songstagram_f16.navigation.model.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -63,6 +64,7 @@ class DetailViewFragment : Fragment(){
        }
         //recyclerview 개수를 넘겨준다.
         override fun getItemCount(): Int {
+            println("@@@@@@@@@  " + contentDTOs.size)
             return contentDTOs.size
         }
         //recyclerview 를 사용할때 메모리를 적게 사용하기 위해 작성한다.
@@ -149,6 +151,7 @@ class DetailViewFragment : Fragment(){
             holder.comment_imageview.setOnClickListener { v ->
                 var intent = Intent(v.context, CommentActivity::class.java)
                 intent.putExtra("contentUid", contentUidList[position])
+                intent.putExtra("destinationUid", contentDTOs[position].uid!!)
                 startActivity(intent)
             }
         }
@@ -167,13 +170,25 @@ class DetailViewFragment : Fragment(){
                 // 좋아요 버튼이 눌려있다면
                 if(contentDTO!!.favorites.containsKey(uid)){
                     contentDTO.favoriteCount = contentDTO.favoriteCount-1
-                    contentDTO?.favorites.remove(uid)
+                    contentDTO.favorites.remove(uid)
                 }else{
                     contentDTO.favoriteCount = contentDTO.favoriteCount+1
                     contentDTO.favorites[uid!!] = true
+                    favoriteAlarm(contentDTOs[position].uid!!)
                 }
                 transaction.set(tsDoc, contentDTO)
             }
+        }
+
+        fun favoriteAlarm(destinationUid : String){
+            var alarmDTO = AlarmDTO()
+            alarmDTO.destinationUid = destinationUid
+            alarmDTO.userId = FirebaseAuth.getInstance().currentUser?.email
+            alarmDTO.uid = FirebaseAuth.getInstance().currentUser?.uid
+            alarmDTO.kind = 0
+            alarmDTO.timestamp = System.currentTimeMillis()
+            FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+
         }
 
 

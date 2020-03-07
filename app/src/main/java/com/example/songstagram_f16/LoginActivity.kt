@@ -159,12 +159,12 @@ class LoginActivity : AppCompatActivity() {
                     // ID 생성이 성공적으로 끝나면 수행할 것들
                     //Creating a user account
                     moveMainPage(task.result?.user)
-                } else if (!(task.exception?.message.isNullOrEmpty())){
+                } else if (task.exception?.message.isNullOrEmpty()){
                 // 로그인 에러시
                     Toast.makeText(this,task.exception?.message, Toast.LENGTH_LONG).show()
                 }else{
                     //login if you have account
-                    // 아이디 호출도 아니고 에러메시지도 아닐때
+                    // 아이디 생성도 아니고 에러메시지도 아닐때
                     signinEmail()
                 }
             }

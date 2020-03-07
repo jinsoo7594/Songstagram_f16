@@ -40,7 +40,6 @@ class AddPhotoActivity : AppCompatActivity() {
 
         //add image upload event
         addphoto_btn_upload.setOnClickListener{
-            println("00000000000000000000000번")
             contentUpload()}
     }
     //선택한 이미지를 받는 기능
@@ -61,13 +60,16 @@ class AddPhotoActivity : AppCompatActivity() {
             }
         }
     }
+    //Storage에 업로드할 때
     fun contentUpload(){
         //Make filename
         var timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        var imageFileName = "IMAGE_" + timestamp + "_.png"
+        var imageFileName = "IMAGE_" + timestamp + "_.png" // 중복방지
         println("111111111111111111111번"+imageFileName)
+        // 폴더명 : images
         var storageRef = storage?.reference?.child("images")?.child(imageFileName)
         println("2222222222222222222222번"+storageRef)
+
         //FileUpload ( 업로드에는 Callback 과 Promise 방식이 있다. 둘 중 편한걸 선택해서 사용하면 된다.)
         //Promise method (구글 권장 방식)
         storageRef?.putFile(photoUri!!)?.continueWithTask{ task: Task<UploadTask.TaskSnapshot> ->
@@ -92,7 +94,7 @@ class AddPhotoActivity : AppCompatActivity() {
             //Insert timestamp
             contentDTO.timestamp = System.currentTimeMillis()
 
-            firestore?.collection("images")?.document("feeds")?.set(contentDTO)
+            firestore?.collection("images")?.document()?.set(contentDTO)
 
             setResult(Activity.RESULT_OK)
 
